@@ -3,7 +3,9 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <math.h>
 using namespace std;
+
 struct element{
     int val;
     int count;
@@ -46,17 +48,49 @@ void make_word(vector<element> &elements, int start, int end){
         make_word(elements, mid, end);
     }
 }
+/*
+TODO:
+    input verification???
+    Bytes to bit
+    The Algorithm 
+    
+    😸
+*/
 
-int main(){
+int main(int argc, char* argv[]){
     int count = 0;
-    cout << "miau" << endl;
     vector<element> freq;
-    int curr_elements = 256;
-    for(int i = 0; i < 255; i++){
+    int wordSize;      // word size (2 - 16)
+    string inputFile;  // input file directory
+    string outputFile; // output file directory
+    char mode;         // encode/decode modes
+
+    //Reading arguments
+    //encode/decode inputFile outputFile
+    cout << "argc " << argc << endl;
+    if(argc != 5){
+        cout << "Error: bad arguments inputed" << endl;
+        cout << "[e|d] wordSize inputFile outputFile" << endl;
+        cout << "default arguments entered" << endl;    
+        mode = 'e';
+        wordSize = 8;
+        inputFile = "input.txt";
+        outputFile = "output.txt";
+    }
+    else {
+        mode = *argv[1];
+        wordSize = (int)*argv[2] - '0';
+        inputFile = argv[3];
+        outputFile = argv[4];
+    }
+    int curr_elements = pow(2, wordSize); //curr_elements saves the max byte size (if 8 then 256)
+
+    for(int i = 0; i < curr_elements; i++){
         freq.push_back(element(i));
     }
     
-    ifstream input("test.txt", std::ios::binary);
+    //Reading stuff
+    ifstream input(inputFile, std::ios::binary);
 
     vector<unsigned char> bytes(
          (std::istreambuf_iterator<char>(input)),
@@ -64,9 +98,12 @@ int main(){
 
     input.close();
     cout<<bytes.size()<<endl;
+
+    //adding bytes to array
     for(signed int i = 0; i < bytes.size(); i++){
         freq[int(bytes[i])].inc();
     }
+
     sort(freq.begin(), freq.end(), comp_bigger());
     for(int i = 0; i < freq.size(); i++){
         if(freq[i].count == 0){
@@ -74,6 +111,7 @@ int main(){
             break;
         }
     }
+
     make_word(freq,0, freq.size()-1);
     for(int i = 0; i < freq.size(); i++){
         if(freq[i].bits.length() < 8){
@@ -82,13 +120,14 @@ int main(){
             }
         }
     }
-    cout<<"hellp"<<endl;
+
     for(int i = 0; i < freq.size(); i++){
         //cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << endl;
         cout<< char(freq[i].val) << " " << freq[i].count << " " << endl;
    
     }
-    return 0;
+
+    return 1;
 }
 
 

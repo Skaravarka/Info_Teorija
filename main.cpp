@@ -49,6 +49,7 @@ void make_word(vector<element> &elements, int start, int end){
 
 int main(){
     int count = 0;
+    cout << "miau" << endl;
     vector<element> freq;
     int curr_elements = 256;
     for(int i = 0; i < 255; i++){
@@ -87,3 +88,9 @@ int main(){
     }
     return 0;
 }
+
+
+
+
+
+

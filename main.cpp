@@ -81,7 +81,7 @@ int main(){
             }
         }
     }
-
+    cout<<"hellp"<<endl;
     for(int i = 0; i < freq.size(); i++){
         cout<<char(freq[i].val)<<" "<<freq[i].count<<" "<<freq[i].bits<<endl;
     }

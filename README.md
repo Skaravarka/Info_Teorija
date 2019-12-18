@@ -17,6 +17,7 @@ TODO:
 	[]Reikia įrašyma padaryti, kad duotą bitų seką, nesvarbu kokio didumo įrašytų, nes daug šansų, kad tai nebus 8 skaičiaus kartotinis xd
 	
 How to launch the program:
+
 ./bat.bat
 
 ./main [e|d] wordSize inputFile outputFile

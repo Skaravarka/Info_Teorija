@@ -105,7 +105,7 @@ int main(int argc, char* argv[]){
         cout << "[e|d] wordSize inputFile outputFile" << endl;
         cout << "default arguments entered" << endl;    
         mode = 'e';
-        wordSize = 7;
+        wordSize = 16;
         inputFile = "input.txt";
         outputFile = "output.txt";
     }

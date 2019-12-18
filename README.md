@@ -1,3 +1,3 @@
 # Info_Teorija
 
-this is a testasd
+Čia jau nebe testas (:

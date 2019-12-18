@@ -134,7 +134,6 @@ int main(int argc, char* argv[]){
     // creating binary vector
     binaryVector = createBinaryVector(bytes, wordSize);
 
-
     //adding bytes to array
     for(signed int i = 0; i < bytes.size(); i++){
         freq[int(bytes[i])].inc();

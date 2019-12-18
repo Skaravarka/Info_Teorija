@@ -16,4 +16,8 @@ TODO:
 	[]Fano algoritmą kiek suprantu gauni medį kodų ir po to jį reikia išsaugoti
 	[]Reikia įrašyma padaryti, kad duotą bitų seką, nesvarbu kokio didumo įrašytų, nes daug šansų, kad tai nebus 8 skaičiaus kartotinis xd
 	
-	
+How to launch the program:
+./bat.bat
+./main [e|d] wordSize inputFile outputFile
+
+arba tiesiog ./main tada default settings bus ( e 8 input.txt output.txt )

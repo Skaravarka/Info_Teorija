@@ -1,6 +1,8 @@
 # Info_Teorija
 
+
 Čia jau nebe testas (:
+(galėtu gražiau viską čia parodyti xd)
 
 Okay, turim iki sausio 6d pasidaryt šitą š. 
 

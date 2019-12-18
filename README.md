@@ -18,6 +18,7 @@ TODO:
 	
 How to launch the program:
 ./bat.bat
+
 ./main [e|d] wordSize inputFile outputFile
 
 arba tiesiog ./main tada default settings bus ( e 8 input.txt output.txt )

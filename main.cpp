@@ -24,7 +24,7 @@ void inputVerification(int argc, char* argv[]){
         cout << "[e|d] wordSize inputFile outputFile" << endl;
         cout << "default arguments entered" << endl;    
         mode = 'e';
-        wordSize = 16;
+        wordSize = 8;
         inputFile = "input.txt";
         outputFile = "output.txt";
     }
@@ -35,28 +35,28 @@ void inputVerification(int argc, char* argv[]){
         outputFile = argv[4];
     }
 }
-
+/*
 void make_word(vector<element> &elements, int start, int end){
     if(start == end){
         return;
     }
     if(end - start == 1){
-        elements[start].bits+='0';
-        elements[end].bits+='1';
+        elements[start].cypherBits+='0';
+        elements[end].cypherBits+='1';
     }else if(end-start > 1){
         int mid = (end-start+1)/2 + start;
         
         for(int i = start; i< mid; i++){
-            elements[i].bits+='0';
+            elements[i].cypherBits+='0';
         }
         make_word(elements, start, mid-1);
         for(int i = mid; i <= end; i++){
-            elements[i].bits+='1';
+            elements[i].cypherBits+='1';
         }
         make_word(elements, mid, end);
     }
 }
-
+*/
 /*
 TODO:
     input verification???
@@ -89,7 +89,10 @@ int main(int argc, char* argv[]){
     // creating frequency vector
     freq = createFrequencyVector(wordSize, binaryVector);
 
+    // making cyphers
+    codeSFTree(freq, 0, freq.size(), sumCounts(freq, 0, freq.size()));
 
+    /*
     make_word(freq,0, freq.size()-1);
     for(int i = 0; i < freq.size(); i++){
         if(freq[i].bits.length() < 8){
@@ -98,9 +101,10 @@ int main(int argc, char* argv[]){
             }
         }
     }
+    */
 
     for(int i = 0; i < freq.size(); i++){
-        //cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << endl;
+        cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << " " << freq[i].cypherBits << endl;
         //cout<< char(freq[i].val) << " " << freq[i].count << " " << endl;
    
     }

@@ -65,3 +65,42 @@ vector<element> createFrequencyVector(int wordSize, vector<string> binaryVector)
     }
     return freq;
 }
+// sums freq counts
+int sumCounts(vector<element> freq, int start, int end){
+    int sum = 0;
+    for(int i = start; i < end; i++){
+        sum += freq[i].count;
+    }
+    return sum;
+}
+// create cypher code by using The Shannon–Fano tree
+void codeSFTree(vector<element> &freq, int start, int end, int sum){
+    //cout << sumCounts(freq, start, end) << endl;
+    //cout << "start" << start << " end" << end << endl;
+    if(start == end - 1){
+        return;
+    }
+    int tempSum1 = 0;
+    int tempSum2 = 0;
+    int mid; 
+
+    for(int i = start; i < end; i++){
+        tempSum1 += freq[i].count;
+        mid = i;
+        if(abs(sum - (tempSum2 * 2)) < abs(sum - (tempSum1 * 2))){
+            tempSum1 = tempSum2;
+            break;
+        }
+        else tempSum2 = tempSum1;
+    }
+    for(int i = start; i < mid; i++){
+        freq[i].cypherBits += "0";
+    }
+    codeSFTree(freq, start, mid, tempSum1);
+
+    for(int i = mid; i < end; i++){
+        freq[i].cypherBits += "1";
+    }
+    codeSFTree(freq, mid, end, sum - tempSum1);
+
+}

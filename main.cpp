@@ -6,30 +6,35 @@
 #include <math.h>
 #include <bitset>
 #include "functions.h"
+#include "struct.h"
 
 using namespace std;
 
-struct element{
-    int val;
-    int count;
-    string bits;
-    element(int value): val(value), count(0), bits("") {}
-    
-    void inc(){
-        count++;
-    }
-};
+int wordSize;      // word size (2 - 16)
+string inputFile;  // input file directory
+string outputFile; // output file directory
+char mode;         // encode/decode modes
 
-struct dictionary{
-    int val;
-    string new_val;
-};
-
-struct comp_bigger{
-    inline bool operator() (const element& struct1, const element& struct2){
-        return (struct1.count > struct2.count);
+void inputVerification(int argc, char* argv[]){
+    //Reading arguments
+    //encode/decode inputFile outputFile
+    cout << "argc " << argc << endl;
+    if(argc != 5){
+        cout << "Error: bad arguments inputed" << endl;
+        cout << "[e|d] wordSize inputFile outputFile" << endl;
+        cout << "default arguments entered" << endl;    
+        mode = 'e';
+        wordSize = 16;
+        inputFile = "input.txt";
+        outputFile = "output.txt";
     }
-};
+    else {
+        mode = *argv[1];
+        wordSize = (int)*argv[2] - '0';
+        inputFile = argv[3];
+        outputFile = argv[4];
+    }
+}
 
 void make_word(vector<element> &elements, int start, int end){
     if(start == end){
@@ -62,63 +67,28 @@ TODO:
 */
 
 int main(int argc, char* argv[]){
+    // Defining stuff
     int count = 0;
     vector<string> binaryVector;
-    vector<element> freq;
-    int wordSize;      // word size (2 - 16)
-    string inputFile;  // input file directory
-    string outputFile; // output file directory
-    char mode;         // encode/decode modes
+    vector<element> freq; //Frequency vector with element Struct
 
-    //Reading arguments
-    //encode/decode inputFile outputFile
-    cout << "argc " << argc << endl;
-    if(argc != 5){
-        cout << "Error: bad arguments inputed" << endl;
-        cout << "[e|d] wordSize inputFile outputFile" << endl;
-        cout << "default arguments entered" << endl;    
-        mode = 'e';
-        wordSize = 16;
-        inputFile = "input.txt";
-        outputFile = "output.txt";
-    }
-    else {
-        mode = *argv[1];
-        wordSize = (int)*argv[2] - '0';
-        inputFile = argv[3];
-        outputFile = argv[4];
-    }
-    int curr_elements = pow(2, wordSize); //curr_elements saves the max byte size (if 8 then 256)
+    // reading inputs
+    inputVerification(argc, argv);
 
-    for(int i = 0; i < curr_elements; i++){
-        freq.push_back(element(i));
-    }
-    
-    //Reading stuff
+    // Reading input file
     ifstream input(inputFile, std::ios::binary);
-
     vector<unsigned char> bytes(
          (std::istreambuf_iterator<char>(input)),
          (std::istreambuf_iterator<char>()));
-
     input.close();
-    cout<<bytes.size()<<endl;
+    //cout<< bytes.size() << " LINE" << __LINE__ << endl;
 
     // creating binary vector
     binaryVector = createBinaryVector(bytes, wordSize);
+    
+    // creating frequency vector
+    freq = createFrequencyVector(wordSize, binaryVector);
 
-    //adding bytes to array
-    for(signed int i = 0; i < bytes.size(); i++){
-        freq[int(bytes[i])].inc();
-    }
-
-    sort(freq.begin(), freq.end(), comp_bigger());
-    for(int i = 0; i < freq.size(); i++){
-        if(freq[i].count == 0){
-            freq.erase(freq.begin()+i, freq.end());
-            break;
-        }
-    }
 
     make_word(freq,0, freq.size()-1);
     for(int i = 0; i < freq.size(); i++){

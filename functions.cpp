@@ -1,11 +1,17 @@
 #include "functions.h"
+#include "struct.h"
 #include <vector>
-#include <string>
+#include <iomanip>
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <math.h>
 #include <bitset>
 
 using namespace std;
-
-vector<string> createBinaryVector(vector<unsigned char> bytes, int wordSize){
+// creates binary vector from input file
+vector<string> createBinaryVector(vector<unsigned char> bytes, int wordSize){ //fun
     vector<string> tempVector;
      
     string tempString1;
@@ -30,8 +36,32 @@ vector<string> createBinaryVector(vector<unsigned char> bytes, int wordSize){
     }
     /*
     for(int i = 0; i < tempVector.size(); i++){
-        cout << tempVector[i] << endl;
+        cout << binaryStringToInt(tempVector[i]) << endl;
     }
     */
     return tempVector;
+}
+int binaryStringToInt(string bin){
+    return stoi(bin, 0, 2);
+}
+// creates frequency of repeating symbols in the input file
+vector<element> createFrequencyVector(int wordSize, vector<string> binaryVector){
+    int curr_elements = pow(2, wordSize); //curr_elements saves the max byte size (if 8 then 256)
+    vector<element> freq;
+    
+    for(int i = 0; i < curr_elements; i++){
+        freq.push_back(element(i, wordSize));
+    }
+    for(signed int i = 0; i < binaryVector.size(); i++){
+        freq[int(binaryStringToInt(binaryVector[i]))].inc();
+    };
+
+    sort(freq.begin(), freq.end(), comp_bigger());
+    for(int i = 0; i < freq.size(); i++){
+        if(freq[i].count == 0){
+            freq.erase(freq.begin()+i, freq.end());
+            break;
+        }
+    }
+    return freq;
 }

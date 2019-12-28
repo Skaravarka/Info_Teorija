@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <math.h>
 #include <bitset>
+#include <sstream>
 
 using namespace std;
 // creates binary vector from input file
@@ -44,6 +45,18 @@ vector<string> createBinaryVector(vector<unsigned char> bytes, int wordSize){ //
 int binaryStringToInt(string bin){
     return stoi(bin, 0, 2);
 }
+string decToBinary(int n, int size) {
+    string temp = ""; 
+    // Size of an integer is assumed to be 32 bits 
+    for (int i = size - 1; i >= 0; i--) { 
+        int k = n >> i; 
+        if (k & 1) 
+            temp += "1"; 
+        else
+            temp += "0"; 
+    }
+    return temp; 
+} 
 // creates frequency of repeating symbols in the input file
 vector<element> createFrequencyVector(int wordSize, vector<string> binaryVector){
     int curr_elements = pow(2, wordSize); //curr_elements saves the max byte size (if 8 then 256)
@@ -102,5 +115,53 @@ void codeSFTree(vector<element> &freq, int start, int end, int sum){
         freq[i].cypherBits += "1";
     }
     codeSFTree(freq, mid, end, sum - tempSum1);
+}
 
+string codeFileHeader(vector<element> codeMap, int wordSize){
+    string header = "";
+    int temp = codeMap.size();
+    header += decToBinary(temp, wordSize);
+    cout << header << endl;
+    for(int i = 0; i < temp; i++){
+        header += decToBinary(codeMap[i].cypherBits.size(), wordSize);
+        header += codeMap[i].bits;
+        header += codeMap[i].cypherBits;
+    }
+    while(header.size() % wordSize != 0){
+        header += "0";
+    }
+
+    return header;
+}
+string codeBody(vector<string> text, vector<element> codeMap, int wordSize){
+    string body = "";
+    for(int i = 0; i < text.size(); i++){
+        for(int j = 0; j < codeMap.size(); j++){
+            if(text[i].compare(codeMap[j].bits) == 0){
+                body += codeMap[j].cypherBits;
+                break;
+            }
+        }
+    }
+    return body;
+}
+void printToFile(string str, string fileName){
+    ofstream out(fileName);
+
+    istringstream in(str);
+    bitset<8> bs;
+    while(in >> bs){
+        out << char(bs.to_ulong());
+    }
+    cout << endl;
+    out.close();
+}
+vector<unsigned char> readFile(string fileName){
+    ifstream input(fileName, std::ios::binary);
+    vector<unsigned char> bytes( 
+         (std::istreambuf_iterator<char>(input)),
+         (std::istreambuf_iterator<char>()));
+    input.close();
+
+    return bytes;
 }

@@ -36,28 +36,6 @@ void inputVerification(int argc, char* argv[]){
     }
 }
 /*
-void make_word(vector<element> &elements, int start, int end){
-    if(start == end){
-        return;
-    }
-    if(end - start == 1){
-        elements[start].cypherBits+='0';
-        elements[end].cypherBits+='1';
-    }else if(end-start > 1){
-        int mid = (end-start+1)/2 + start;
-        
-        for(int i = start; i< mid; i++){
-            elements[i].cypherBits+='0';
-        }
-        make_word(elements, start, mid-1);
-        for(int i = mid; i <= end; i++){
-            elements[i].cypherBits+='1';
-        }
-        make_word(elements, mid, end);
-    }
-}
-*/
-/*
 TODO:
     input verification???
     Bytes to bit
@@ -76,39 +54,45 @@ int main(int argc, char* argv[]){
     inputVerification(argc, argv);
 
     // Reading input file
-    ifstream input(inputFile, std::ios::binary);
-    vector<unsigned char> bytes(
-         (std::istreambuf_iterator<char>(input)),
-         (std::istreambuf_iterator<char>()));
-    input.close();
+    vector<unsigned char> bytes = readFile(inputFile);
     //cout<< bytes.size() << " LINE" << __LINE__ << endl;
 
     // creating binary vector
     binaryVector = createBinaryVector(bytes, wordSize);
-    
+
     // creating frequency vector
     freq = createFrequencyVector(wordSize, binaryVector);
 
     // making cyphers
     codeSFTree(freq, 0, freq.size(), sumCounts(freq, 0, freq.size()));
+    
+    string header = codeFileHeader(freq, wordSize);
+    cout << "afterBody: " << header << endl;
 
-    /*
-    make_word(freq,0, freq.size()-1);
-    for(int i = 0; i < freq.size(); i++){
-        if(freq[i].bits.length() < 8){
-            while (freq[i].bits.length() != 8){
-               freq[i].bits.insert(freq[i].bits.begin(), '0');
-            }
-        }
+    string body = codeBody(binaryVector, freq, wordSize);
+    //cout << "afterBody: " << body << endl;
+
+    printToFile(header + body, outputFile);
+
+    //
+    // DECODE
+    //
+
+
+    bytes = readFile(outputFile);
+    cout<< bytes.size() << " LINE" << __LINE__ << endl;
+    binaryVector = createBinaryVector(bytes, wordSize);
+    for(int i = 0; i < binaryVector.size(); i++){
+        cout << binaryVector[i] << endl;
     }
-    */
+
+
 
     for(int i = 0; i < freq.size(); i++){
         cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << " " << freq[i].cypherBits << endl;
         //cout<< char(freq[i].val) << " " << freq[i].count << " " << endl;
-   
-    }
 
+    }
     return 1;
 }
 

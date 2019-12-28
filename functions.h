@@ -10,5 +10,6 @@ int binaryStringToInt(std::string bin);
 std::vector<element> createFrequencyVector(int wordSize, std::vector<std::string> binaryVector);
 void codeSFTree(std::vector<element> &freq, int start, int end, int sum);
 int sumCounts(std::vector<element> freq, int start, int end);
+void encode(std::vector<element> freq, const   char* filename);
 
 #endif 

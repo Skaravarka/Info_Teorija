@@ -104,3 +104,50 @@ void codeSFTree(vector<element> &freq, int start, int end, int sum){
     codeSFTree(freq, mid, end, sum - tempSum1);
 
 }
+void encode(vector<element> freq, const   char* filename){
+    ofstream myfile;
+    myfile.open (filename, ios::out | ios::binary);
+    if(myfile.is_open()){
+        myfile<<freq.size()<<endl;    //Number of entries that will follow
+        for(int i = 0; i < freq.size(); i++){
+        myfile<< freq[i].count << " " << freq[i].bits << " " << freq[i].cypherBits << endl; //Table: |Count of New|Original|New/Current bin
+        }
+        unsigned char buffer = 00000000;    //Byte that's going to be writen
+        int count = 0;                      //Counts when Byte is constructed
+        for(int i = 0; i < freq.size(); i++){
+            for(int q = 0; q < freq[i].count; q++){
+                for(int k = 0; k < freq[i].cypherBits.length(); k++){
+                    int w = freq[i].cypherBits[k] - '0';                //Takes a single char from string
+                    //cout<<w;               //Debugging
+                    char bit = w;                                       //Turns said char to a bit
+                    buffer <<=1;                                        //Makes room for next bit
+                    buffer ^= bit;                                      //Xor for adding bit to buffer
+                    count++;                                            //Remember that bit was added
+                    //bitset<8> x(buffer);  //Debugging
+                    //cout << x <<" ";      //Debugging
+                    if(count == 8){                                     //When byte constructed
+                        myfile.write((char *)&buffer,sizeof(buffer));   //Writes constructed byte to file
+                      //  cout<<"<-p ";     //Debugging
+                        buffer=0;
+                        count=0;
+                    }
+                }
+            }
+           // cout<<"------------"<<endl;   //Debugging
+        }
+        //Finishes off last bits so they make a byte by adding zeros to the end
+        if(count != 0){
+            while(count != 8){
+                buffer <<= 1;
+                count++;
+            }
+            myfile.write((char *)&buffer,sizeof(buffer));
+        }
+    }
+    else
+    {
+        cout<<"Could not Open File"<<endl;
+    }
+    
+    myfile.close();
+}

@@ -121,7 +121,7 @@ string codeFileHeader(vector<element> codeMap, int wordSize){
     string header = "";
     int temp = codeMap.size();
     header += decToBinary(temp, wordSize);
-    cout << header << endl;
+    //cout << header << endl;
     for(int i = 0; i < temp; i++){
         header += decToBinary(codeMap[i].cypherBits.size(), wordSize);
         header += codeMap[i].bits;
@@ -145,14 +145,23 @@ string codeBody(vector<string> text, vector<element> codeMap, int wordSize){
     }
     return body;
 }
-void printToFile(string str, string fileName){
+void printToFileBin(string str, string fileName){
     ofstream out(fileName);
+    
 
     istringstream in(str);
     bitset<8> bs;
     while(in >> bs){
         out << char(bs.to_ulong());
     }
+
+    out.close();
+}
+void printToFileStr(string str, string fileName){   
+
+
+    ofstream out(fileName);
+    out << str;
     cout << endl;
     out.close();
 }
@@ -164,4 +173,85 @@ vector<unsigned char> readFile(string fileName){
     input.close();
 
     return bytes;
+}
+
+string decode(vector<string> text, int wordSize){
+    cout << "start Decode" << endl;
+    vector<element> codeMap;
+    string str = "";
+    string textString = "";
+    int size = binaryStringToInt(text[0]);
+    for(int i = 1; i < text.size(); i++){
+        textString += text[i];
+    }
+    cout << "size" << size << endl;
+
+    int temp;
+
+    int j = 0;
+    //cout << textString.size() << endl;
+    for(int i = 0; i < size; i++){
+        temp = binaryStringToInt(textString.substr(j,  wordSize));
+        cout << "temp " << temp << " " << textString.substr(j, wordSize) << endl;
+        cout << j << " " << j + wordSize << endl;
+
+        string tempBit = textString.substr(j + wordSize, wordSize);
+        string cypherBit = textString.substr(j + (2*wordSize), temp);
+
+        cout << tempBit << " " << cypherBit << endl;
+        cout << textString.substr(j) << endl;
+        codeMap.push_back(element(binaryStringToInt(tempBit), wordSize, cypherBit));
+        j = j + (temp + wordSize * 2);
+        
+    }
+
+    for(int i = 0; i < codeMap.size(); i++){
+        //cout<< char(codeMap[i].val) << " " << codeMap[i].count << " " << codeMap[i].bits << " " << codeMap[i].cypherBits << endl;
+        //cout<< char(freq[i].val) << " " << freq[i].count << " " << endl;
+    }
+    while(j % wordSize != 0){
+        j++;
+    }
+
+    cout << "Decoding" << endl;
+
+    string tempString = "";
+    int len = 1;
+    int saveI = 0;
+    bool find1 = false, find2 = false;
+    while(j < textString.size()){
+        tempString = textString.substr(j, len);
+        //cout << textString.substr(j) << endl;
+        //cout << tempString << endl;
+        for(int i = 0; i < codeMap.size(); i++){
+            if(codeMap[i].cypherBits.compare(tempString) == 0){
+                find1 = true;
+                saveI = i;
+                break;
+            }
+            else find1 = false;
+        }
+        if((!find1 && find2)){
+            find2 = false;
+            find1 = false;
+            j += len - 1;
+            len = 0;
+            str += char(binaryStringToInt(codeMap[saveI].bits));
+            
+        }
+        if(textString.substr(j).compare(textString.substr(j, len)) == 0){
+            for(int i = 0; i < codeMap.size(); i++){
+                if(codeMap[i].cypherBits.compare(textString.substr(j)) == 0){
+                    str += char(binaryStringToInt(codeMap[i].bits));
+                    break;
+                }
+            }
+            break;
+        }
+        find2 = find1;
+        len++;
+        //cout << j << endl;
+    }
+    cout << "end string" << str << endl;
+    return str;
 }

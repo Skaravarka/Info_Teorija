@@ -12,8 +12,10 @@ void codeSFTree(std::vector<element> &freq, int start, int end, int sum);
 int sumCounts(std::vector<element> freq, int start, int end);
 std::string codeFileHeader(std::vector<element> codeMap, int wordSize);
 std::string codeBody(std::vector<std::string> text, std::vector<element> codeMap, int wordSize);
-void printToFile(std::string str, std::string fileName);
+void printToFileBin(std::string str, std::string fileName);
+void printToFileStr(std::string str, std::string fileName);
 std::vector<unsigned char> readFile(std::string fileName);
 void encode(std::vector<element> freq, const   char* filename);
+std::string decode(std::vector<std::string> text, int wordSize);
 
 #endif 

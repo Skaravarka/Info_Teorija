@@ -67,12 +67,13 @@ int main(int argc, char* argv[]){
     codeSFTree(freq, 0, freq.size(), sumCounts(freq, 0, freq.size()));
     
     string header = codeFileHeader(freq, wordSize);
-    cout << "afterBody: " << header << endl;
+    cout << "header: " << header << endl;
 
     string body = codeBody(binaryVector, freq, wordSize);
     //cout << "afterBody: " << body << endl;
 
-    printToFile(header + body, outputFile);
+
+    printToFileBin(header + body, outputFile);
 
     //
     // DECODE
@@ -82,11 +83,9 @@ int main(int argc, char* argv[]){
     bytes = readFile(outputFile);
     cout<< bytes.size() << " LINE" << __LINE__ << endl;
     binaryVector = createBinaryVector(bytes, wordSize);
-    for(int i = 0; i < binaryVector.size(); i++){
-        cout << binaryVector[i] << endl;
-    }
+    string decodeString = decode(binaryVector, wordSize);
 
-
+    printToFileStr(decodeString, "decoded.txt");
 
     for(int i = 0; i < freq.size(); i++){
         cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << " " << freq[i].cypherBits << endl;

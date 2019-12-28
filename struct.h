@@ -15,6 +15,10 @@ struct element{
         bits = std::bitset<16>(value).to_string();
         bits = bits.substr(16 - wSize, 16);
     }
+    element(int value, int wSize, std::string stva): val(value), count(0), cypherBits(stva) {
+        bits = std::bitset<16>(value).to_string();
+        bits = bits.substr(16 - wSize, 16);
+    }
     void inc(){
         count++;
     }

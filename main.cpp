@@ -68,16 +68,12 @@ int main(int argc, char* argv[]){
     // making cyphers
     codeSFTree(freq, 0, freq.size(), sumCounts(freq, 0, freq.size()));
     
-    // creating code header (code table)
-    string header = codeFileHeader(freq, wordSize);
-    //cout << "header: " << header << endl;
-
     // creating code body (coding text itself)
     string body = codeBody(binaryVector, freq, wordSize);
     //cout << "afterBody: " << body << endl;
 
     // printing binary string to output file
-    printToFileBin(header + body, outputFile);
+    printToFileBin(body, outputFile);
 
     //
     //

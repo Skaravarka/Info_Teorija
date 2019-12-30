@@ -118,10 +118,12 @@ void codeSFTree(vector<element> &freq, int start, int end, int sum){
     codeSFTree(freq, mid, end, sum - tempSum1);
 }
 
-string codeFileHeader(vector<element> codeMap, int wordSize){
+string codeFileHeader(vector<element> codeMap, int wordSize, int zeroNum){
     string header = "";
     int temp = codeMap.size();
-    header += decToBinary(temp, wordSize);
+    //cout << "temp" << temp << endl;
+    header += decToBinary(temp, 16);
+    header += decToBinary(zeroNum, 8);
     //cout << header << endl;
     for(int i = 0; i < temp; i++){
         header += decToBinary(codeMap[i].cypherBits.size(), wordSize);
@@ -144,7 +146,17 @@ string codeBody(vector<string> text, vector<element> codeMap, int wordSize){
             }
         }
     }
-    return body;
+    int zeroNum = 0;
+    while(body.size() % 8 != 0){
+        body += "0";
+        zeroNum ++;
+    }
+
+    // creating code header (code table)
+    string header = codeFileHeader(codeMap, wordSize, zeroNum);
+    //cout << "header: " << header << endl;
+
+    return header + body;
 }
 void printToFileBin(string str, string fileName){
 
@@ -196,11 +208,12 @@ string decode(vector<string> text, int wordSize){
     vector<element> codeMap; // code table
     string str = "";
     string textString = ""; // string of coded text
-    int size = binaryStringToInt(text[0]);
-    for(int i = 1; i < text.size(); i++){
+    int size = binaryStringToInt(text[0] + text[1]);
+    int zeroNum = binaryStringToInt(text[2]);
+    for(int i = 3; i < text.size(); i++){
         textString += text[i];
     }
-    //cout << "size" << size << endl;
+    
 
     int j = 0;
     std::cout << "creating decode table" << endl;
@@ -224,17 +237,18 @@ string decode(vector<string> text, int wordSize){
         j++;
     }
 
-    //decoding (it's shit!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+    //decoding
     std::cout << "Decoding" << endl;
-    std::cout << "byte count: " << textString.size() << endl;
+    std::cout << "bit count: " << textString.size() << endl;
     std::cout << "code table count: " << codeMap.size() << endl;
     //string tempString = "";
-    string_view tempString=textString;
+    textString = textString.substr(0, textString.size() - zeroNum);
+    string_view tempString = textString;
     int smallestCypher = codeMap[0].cypherBits.size();
     int len = smallestCypher;
     int saveI = 0;
     bool find1 = false, find2 = false;
-    while(j < textString.size()){
+    while(j < textString.size() - zeroNum){
     
          
 

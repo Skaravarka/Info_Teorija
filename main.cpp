@@ -84,9 +84,12 @@ int main(int argc, char* argv[]){
     // DECODE
     //
     //
+    
+
 
     // reading file
     bytes = readFile(outputFile);
+
     //cout<< bytes.size() << " LINE" << __LINE__ << endl;
     
     // creating binary vector for decoding
@@ -98,11 +101,11 @@ int main(int argc, char* argv[]){
     // decoded text output
     printToFileStr(decodeString, "decoded.txt");
 
-    for(int i = 0; i < freq.size(); i++){
+    //for(int i = 0; i < freq.size(); i++){
         //cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << " " << freq[i].cypherBits << endl;
         //cout<< char(freq[i].val) << " " << freq[i].count << " " << endl;
 
-    }
+    //}
 
     // clock end
     chrono::steady_clock::time_point end = std::chrono::steady_clock::now();

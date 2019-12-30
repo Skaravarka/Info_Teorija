@@ -42,6 +42,11 @@
         "xstddef": "cpp",
         "xtr1common": "cpp",
         "xutility": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "chrono": "cpp",
+        "cctype": "cpp",
+        "memory": "cpp",
+        "ratio": "cpp",
+        "tuple": "cpp"
     }
 }

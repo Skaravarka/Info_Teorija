@@ -85,7 +85,6 @@ int main(int argc, char* argv[]){
 
     // reading file
     bytes = readFile(outputFile);
-
     //cout<< bytes.size() << " LINE" << __LINE__ << endl;
     
     // creating binary vector for decoding
@@ -93,8 +92,10 @@ int main(int argc, char* argv[]){
     // decoding
     string decodeString = decode(binaryVector, wordSize);
 
-    // decoded text output
-    printToFileStr(remove_CR(decodeString), "decoded.txt");
+    cout <<"Writing back"<<endl;
+    printToFileStr(decodeString, "decoded.txt");
+
+    check(readFile(inputFile),readFile(inputFile));
 
     /*for(int i = 0; i < freq.size(); i++){
         cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << " " << freq[i].cypherBits << endl;

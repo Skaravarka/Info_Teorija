@@ -193,11 +193,18 @@ string remove_CR(string str){
               
     return str;
 }
-void printToFileStr(string str, string fileName){  
+void printToFileStr(string str, string fileName){ 
+
     ofstream out(fileName);
-    out << str;
-    std::cout << endl;
-    out.close();
+    ofstream fout;
+    string l;
+    fout.open(fileName, ios::binary | ios::out);
+    for(int i = 0; i <str.length();i++){
+        l =str[i];
+        const char *c = l.c_str();
+        fout.write(c,1);
+    }
+    fout.close();
 }
 vector<unsigned char> readFile(string fileName){
     ifstream input(fileName, std::ios::binary);
@@ -297,6 +304,38 @@ string decode(vector<string> text, int wordSize){
         len++;
 
     }
+
     //cout << "end string" << str << endl;
     return str;
+}
+
+void check_debug(vector<unsigned char> original, vector<unsigned char> decoded){
+
+    cout<<"File size:"<<original.size()<<endl;
+    cout<<"Out size:"<<decoded.size()<<endl;
+    int dif = 0;
+    cout<<"Inas:"<<endl;
+    for(int i = 0; i < original.size();i++){
+    printf("%d - %d  ",original[i],decoded[i]);
+    cout<<original[i]<<"-"<<decoded[i];
+    if(original[i] != decoded[i]){
+        dif++;
+        cout<<" Blogas";
+    }
+    cout<<endl;  
+    }
+    cout<<dif;
+    cout<<"Done"<<endl;
+}
+
+int check(vector<unsigned char> original, vector<unsigned char> decoded){
+
+    for(int i = 0; i < original.size();i++){
+    if(original[i] != decoded[i]){
+        cout<<"Files differ"<<endl;
+        return -1;
+    }
+    }
+    cout <<"Files are identical"<<endl;
+    return 1;
 }

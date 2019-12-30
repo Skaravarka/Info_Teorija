@@ -18,5 +18,7 @@ std::string remove_CR(std::string str);
 std::vector<unsigned char> readFile(std::string fileName);
 void encode(std::vector<element> freq, const   char* filename);
 std::string decode(std::vector<std::string> text, int wordSize);
+void check_debug(std::vector<unsigned char> original,std::vector<unsigned char> decoded);
+int check(std::vector<unsigned char> original,std::vector<unsigned char> decoded);
 
 #endif 

@@ -187,8 +187,10 @@ void printToFileBin(string str, string fileName){
 }
 string remove_CR(string str){
     for(int i = 0; i < str.length();i++)
-        if(str[i] == 13)
-            str.erase(i,1);  
+        if(str[i] == 13 && str[i+1]==10){
+            str.erase(i,1);
+        }
+              
     return str;
 }
 void printToFileStr(string str, string fileName){  

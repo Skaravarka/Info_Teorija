@@ -90,18 +90,19 @@ int main(int argc, char* argv[]){
     
     // creating binary vector for decoding
     binaryVector = createBinaryVector(bytes, wordSize);
-    
+
+    //TODO: Su failu test.txt dingsta paskutine raide
     // decoding
     string decodeString = decode(binaryVector, wordSize);
 
     // decoded text output
-    printToFileStr(decodeString, "decoded.txt");
+    printToFileStr(remove_CR(decodeString), "decoded.txt");
 
-    //for(int i = 0; i < freq.size(); i++){
-        //cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << " " << freq[i].cypherBits << endl;
-        //cout<< char(freq[i].val) << " " << freq[i].count << " " << endl;
+    /*for(int i = 0; i < freq.size(); i++){
+        cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << " " << freq[i].cypherBits << endl;
+       // cout<< char(freq[i].val) << " " << freq[i].count << " " << endl;
 
-    //}
+    }*/
 
     // clock end
     chrono::steady_clock::time_point end = std::chrono::steady_clock::now();

@@ -185,9 +185,13 @@ void printToFileBin(string str, string fileName){
 
     out.close();
 }
-void printToFileStr(string str, string fileName){   
-
-
+string remove_CR(string str){
+    for(int i = 0; i < str.length();i++)
+        if(str[i] == 13)
+            str.erase(i,1);  
+    return str;
+}
+void printToFileStr(string str, string fileName){  
     ofstream out(fileName);
     out << str;
     std::cout << endl;

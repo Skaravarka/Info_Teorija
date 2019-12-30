@@ -14,6 +14,7 @@ std::string codeFileHeader(std::vector<element> codeMap, int wordSize, int zeroN
 std::string codeBody(std::vector<std::string> text, std::vector<element> codeMap, int wordSize);
 void printToFileBin(std::string str, std::string fileName);
 void printToFileStr(std::string str, std::string fileName);
+std::string remove_CR(std::string str);
 std::vector<unsigned char> readFile(std::string fileName);
 void encode(std::vector<element> freq, const   char* filename);
 std::string decode(std::vector<std::string> text, int wordSize);

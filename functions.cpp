@@ -252,7 +252,7 @@ string decode(vector<string> text, int wordSize){
     int len = smallestCypher;
     int saveI = 0;
     bool find1 = false, find2 = false;
-    while(j < textString.size() - zeroNum){
+    while(j < textString.size()){
     
          
 

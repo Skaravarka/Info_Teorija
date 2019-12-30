@@ -90,8 +90,6 @@ int main(int argc, char* argv[]){
     
     // creating binary vector for decoding
     binaryVector = createBinaryVector(bytes, wordSize);
-
-    //TODO: Su failu test.txt dingsta paskutine raide
     // decoding
     string decodeString = decode(binaryVector, wordSize);
 

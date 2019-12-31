@@ -11,6 +11,8 @@
 
 using namespace std;
 
+bool DEBUG = true;
+
 int wordSize;      // word size (2 - 16)
 string inputFile;  // input file directory
 string outputFile; // output file directory
@@ -39,9 +41,7 @@ void inputVerification(int argc, char* argv[]){
 /*
 TODO:
     input verification???
-    Bytes to bit
-    The Algorithm 
-    
+    fix decode function for all wirdSize options 🔥
     😸
 */
 
@@ -55,51 +55,94 @@ int main(int argc, char* argv[]){
     // reading inputs
     inputVerification(argc, argv);
 
-    // Reading input file
-    vector<unsigned char> bytes = readFile(inputFile);
-    //cout<< bytes.size() << " LINE" << __LINE__ << endl;
+    if(DEBUG){
+        // Reading input file
+        vector<unsigned char> bytes = readFile(inputFile);
+        //cout<< bytes.size() << " LINE" << __LINE__ << endl;
 
-    // creating binary vector
-    binaryVector = createBinaryVector(bytes, wordSize);
+        // creating binary vector
+        binaryVector = createBinaryVector(bytes, wordSize);
 
-    // creating frequency vector
-    freq = createFrequencyVector(wordSize, binaryVector);
+        // creating frequency vector
+        freq = createFrequencyVector(wordSize, binaryVector);
 
-    // making cyphers
-    codeSFTree(freq, 0, freq.size(), sumCounts(freq, 0, freq.size()));
+        // making cyphers
+        codeSFTree(freq, 0, freq.size(), sumCounts(freq, 0, freq.size()));
+        
+        // creating code body (coding text itself)
+        string body = codeBody(binaryVector, freq, wordSize);
+        //cout << "afterBody: " << body << endl;
+
+        // printing binary string to output file
+        printToFileBin(body, outputFile);
+
+        // reading file
+        bytes = readFile(outputFile);
+        //cout<< bytes.size() << " LINE" << __LINE__ << endl;
+        
+        // creating binary vector for decoding
+        binaryVector = createBinaryVector(bytes, wordSize);
+        // decoding
+        string decodeString = decode(binaryVector, wordSize);
+
+        printToFileStr(decodeString, "decoded.txt");
+        check(readFile(inputFile),readFile("decoded.txt"));
+
+        // clock end
+        chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        cout << "Time difference = " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[µs]" << std::endl;
+
+        return 1;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//***************************************************************************************************************************************************
+    if(mode == 'e'){
+        // Reading input file
+        vector<unsigned char> bytes = readFile(inputFile);
+        //cout<< bytes.size() << " LINE" << __LINE__ << endl;
+
+        // creating binary vector
+        binaryVector = createBinaryVector(bytes, wordSize);
+
+        // creating frequency vector
+        freq = createFrequencyVector(wordSize, binaryVector);
+
+        // making cyphers
+        codeSFTree(freq, 0, freq.size(), sumCounts(freq, 0, freq.size()));
+        
+        // creating code body (coding text itself)
+        string body = codeBody(binaryVector, freq, wordSize);
+        //cout << "afterBody: " << body << endl;
+
+        // printing binary string to output file
+        printToFileBin(body, outputFile);
+    }
+    if(mode == 'd'){
+        // reading file
+        vector<unsigned char> bytes = readFile(inputFile);
+        // creating binary vector for decoding
+        binaryVector = createBinaryVector(bytes, wordSize);
+        // decoding
+        string decodeString = decode(binaryVector, wordSize);
+        printToFileStr(decodeString, outputFile);
+    }
+//****************************************************************************************************************************************************
     
-    // creating code body (coding text itself)
-    string body = codeBody(binaryVector, freq, wordSize);
-    //cout << "afterBody: " << body << endl;
-
-    // printing binary string to output file
-    printToFileBin(body, outputFile);
-
-    //
-    //
-    // DECODE
-    //
-    //
-    
-
-
-    // reading file
-    bytes = readFile(outputFile);
-    //cout<< bytes.size() << " LINE" << __LINE__ << endl;
-    
-    // creating binary vector for decoding
-    binaryVector = createBinaryVector(bytes, wordSize);
-    // decoding
-    string decodeString = decode(binaryVector, wordSize);
-
-    printToFileStr(decodeString, "decoded.txt");
-    check(readFile(inputFile),readFile("decoded.txt"));
-
-    /*for(int i = 0; i < freq.size(); i++){
-        cout<< char(freq[i].val) << " " << freq[i].count << " " << freq[i].bits << " " << freq[i].cypherBits << endl;
-       // cout<< char(freq[i].val) << " " << freq[i].count << " " << endl;
-
-    }*/
 
     // clock end
     chrono::steady_clock::time_point end = std::chrono::steady_clock::now();

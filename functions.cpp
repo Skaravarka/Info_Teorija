@@ -194,7 +194,10 @@ string remove_CR(string str){
     return str;
 }
 void printToFileStr(string str, string fileName){ 
-
+    if(str.length()==0){
+        cout<<"ERROR Writing, string of length 0"<<endl;
+        return;
+    }
     ofstream out(fileName);
     ofstream fout;
     string l;
@@ -329,7 +332,10 @@ void check_debug(vector<unsigned char> original, vector<unsigned char> decoded){
 }
 
 int check(vector<unsigned char> original, vector<unsigned char> decoded){
-
+    if(original.size()!=decoded.size()){
+        cout<<"Files differ on size alone"<<endl;
+        return -1;
+    }
     for(int i = 0; i < original.size();i++){
     if(original[i] != decoded[i]){
         cout<<"Files differ"<<endl;

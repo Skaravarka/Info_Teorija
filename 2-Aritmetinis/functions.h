@@ -4,7 +4,8 @@
 #include <vector>
 #include <string>
 
+void check_debug(std::vector<unsigned char> original,std::vector<unsigned char> decoded);
 std::vector<unsigned char> readFile(std::string fileName);
-std::vector<std::string> str2bs(std::vector<unsigned char> bytes);
-void printToFileStr(std::string str, std::string fileName);
+int check(std::vector<unsigned char> original,std::vector<unsigned char> decoded);
+
 #endif 

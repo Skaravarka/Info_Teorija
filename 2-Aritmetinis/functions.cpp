@@ -9,10 +9,42 @@
 #include <bitset>
 #include <sstream>
 #include <chrono>
-#include <stdio.h>
-#include <string.h>
 
 using namespace std;
+
+void check_debug(vector<unsigned char> original, vector<unsigned char> decoded){
+
+    cout<<"File size:"<<original.size()<<endl;
+    cout<<"Out size:"<<decoded.size()<<endl;
+    int dif = 0;
+    cout<<"Inas:"<<endl;
+    for(unsigned int i = 0; i < original.size();i++){
+    printf("%d - %d  ",original[i],decoded[i]);
+    cout<<original[i]<<"-"<<decoded[i];
+    if(original[i] != decoded[i]){
+        dif++;
+        cout<<" Blogas";
+    }
+    cout<<endl;  
+    }
+    cout<<dif;
+    cout<<"Done"<<endl;
+}
+
+int check(vector<unsigned char> original, vector<unsigned char> decoded){
+    if(original.size()!=decoded.size()){
+        cout<<"Files differ on size alone"<<endl;
+        return -1;
+    }
+    for(unsigned int i = 0; i < original.size();i++){
+    if(original[i] != decoded[i]){
+        cout<<"Files differ"<<endl;
+        return -1;
+    }
+    }
+    cout <<"Files are identical"<<endl;
+    return 1;
+}
 
 vector<unsigned char> readFile(string fileName){
     ifstream input(fileName, std::ios::binary);
@@ -23,40 +55,3 @@ vector<unsigned char> readFile(string fileName){
 
     return bytes;
 }
-
-vector<string> str2bs(vector<unsigned char> bytes) {
-    char buffer[9] = "";
-    vector <string> ret;
-    for(int i = 0; i < bytes.size(); i++) {
-        sprintf(buffer, 
-            "%c%c%c%c%c%c%c%c", 
-            (bytes[i] & 0x80) ? '1':'0', 
-            (bytes[i] & 0x40) ? '1':'0', 
-            (bytes[i] & 0x20) ? '1':'0', 
-            (bytes[i] & 0x10) ? '1':'0', 
-            (bytes[i] & 0x08) ? '1':'0', 
-            (bytes[i] & 0x04) ? '1':'0', 
-            (bytes[i] & 0x02) ? '1':'0', 
-            (bytes[i] & 0x01) ? '1':'0');
-        ret.push_back(buffer);
-        buffer[0] = '\0';
-    }
-    return ret;
-}
-void printToFileStr(string str, string fileName){ 
-    if(str.length()==0){
-        cout<<"ERROR Writing, string of length 0"<<endl;
-        return;
-    }
-    ofstream out(fileName);
-    ofstream fout;
-    string l;
-    fout.open(fileName, ios::binary | ios::out);
-    for(int i = 0; i <str.length();i++){
-        l =str[i];
-        const char *c = l.c_str();
-        fout.write(c,1);
-    }
-    fout.close();
-}
-

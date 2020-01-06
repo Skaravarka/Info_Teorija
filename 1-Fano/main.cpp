@@ -27,7 +27,7 @@ void inputVerification(int argc, char* argv[]){
         cout << "[e|d] wordSize inputFile outputFile" << endl;
         cout << "default arguments entered" << endl;    
         mode = 'e';
-        wordSize = 8;
+        wordSize = 16;
         inputFile = "input.txt";
         outputFile = "output.txt";
     }
@@ -51,6 +51,7 @@ int main(int argc, char* argv[]){
     int count = 0;
     vector<string> binaryVector;
     vector<element> freq; //Frequency vector with element Struct
+    int del = 0;
 
     // reading inputs
     inputVerification(argc, argv);
@@ -61,17 +62,19 @@ int main(int argc, char* argv[]){
         //cout<< bytes.size() << " LINE" << __LINE__ << endl;
 
         // creating binary vector
-        binaryVector = createBinaryVector(bytes, wordSize);
+        binaryVector = createBinaryVector(bytes, wordSize, true, del);
 
         // creating frequency vector
         freq = createFrequencyVector(wordSize, binaryVector);
 
         // making cyphers
         codeSFTree(freq, 0, freq.size(), sumCounts(freq, 0, freq.size()));
-        
+
         // creating code body (coding text itself)
-        string body = codeBody(binaryVector, freq, wordSize);
+        string body = codeBody(binaryVector, freq, wordSize, del);
         //cout << "afterBody: " << body << endl;
+
+
 
         // printing binary string to output file
         printToFileBin(body, outputFile);
@@ -81,9 +84,14 @@ int main(int argc, char* argv[]){
         //cout<< bytes.size() << " LINE" << __LINE__ << endl;
         
         // creating binary vector for decoding
-        binaryVector = createBinaryVector(bytes, wordSize);
+        binaryVector = createBinaryVector(bytes, wordSize, false, del);
         // decoding
-        string decodeString = decode(binaryVector, wordSize);
+        for(int i = 0; i < binaryVector.size(); i++){
+            //cout << binaryVector[i] << endl;
+        }
+
+
+        string decodeString = decode(binaryVector, wordSize, del);
 
         printToFileStr(decodeString, "decoded.txt");
         check(readFile(inputFile),readFile("decoded.txt"));
@@ -117,7 +125,7 @@ int main(int argc, char* argv[]){
         //cout<< bytes.size() << " LINE" << __LINE__ << endl;
 
         // creating binary vector
-        binaryVector = createBinaryVector(bytes, wordSize);
+        binaryVector = createBinaryVector(bytes, wordSize, true, del);
 
         // creating frequency vector
         freq = createFrequencyVector(wordSize, binaryVector);
@@ -126,7 +134,7 @@ int main(int argc, char* argv[]){
         codeSFTree(freq, 0, freq.size(), sumCounts(freq, 0, freq.size()));
         
         // creating code body (coding text itself)
-        string body = codeBody(binaryVector, freq, wordSize);
+        string body = codeBody(binaryVector, freq, wordSize, del);
         //cout << "afterBody: " << body << endl;
 
         // printing binary string to output file
@@ -136,9 +144,9 @@ int main(int argc, char* argv[]){
         // reading file
         vector<unsigned char> bytes = readFile(inputFile);
         // creating binary vector for decoding
-        binaryVector = createBinaryVector(bytes, wordSize);
+        binaryVector = createBinaryVector(bytes, wordSize, false, del);
         // decoding
-        string decodeString = decode(binaryVector, wordSize);
+        string decodeString = decode(binaryVector, wordSize, del);
         printToFileStr(decodeString, outputFile);
     }
 //****************************************************************************************************************************************************

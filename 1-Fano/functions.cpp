@@ -13,9 +13,9 @@
 
 using namespace std;
 // creates binary vector from input file
-vector<string> createBinaryVector(vector<unsigned char> bytes, int wordSize){ //fun
+vector<string> createBinaryVector(vector<unsigned char> bytes, int wordSize, bool mode, int &del){ //fun
     vector<string> tempVector;
-     
+    del = 0;
     string tempString1;
     string tempString2 = "";
 
@@ -30,12 +30,18 @@ vector<string> createBinaryVector(vector<unsigned char> bytes, int wordSize){ //
         tempString2 = tempString1;
     }
     
-    if(tempString2.size() != 0){
-        while (tempString2.size() != wordSize){
-            tempString2 = "0" + tempString2;
+    if(mode){
+        if(tempString2.size() != 0){
+            while (tempString2.size() != wordSize){
+                tempString2 = "0" + tempString2;
+                del++;
+            }
+            tempVector.push_back(tempString2);
         }
-        tempVector.push_back(tempString2);
     }
+    else tempVector.push_back(tempString2);
+
+
     /*
     for(int i = 0; i < tempVector.size(); i++){
         cout << binaryStringToInt(tempVector[i]) << endl;
@@ -118,30 +124,40 @@ void codeSFTree(vector<element> &freq, int start, int end, int sum){
     codeSFTree(freq, mid, end, sum - tempSum1);
 }
 
-string codeFileHeader(vector<element> codeMap, int wordSize, int zeroNum){
+string codeFileHeader(vector<element> codeMap, int wordSize, int zeroNum, int del){
     string header = "";
     int temp = codeMap.size();
     //cout << "temp" << temp << endl;
-    header += decToBinary(temp, 16);
-    header += decToBinary(zeroNum, 8);
-    //cout << header << endl;
+    if(wordSize != 2){
+        header += decToBinary(del, wordSize);
+        header += decToBinary(temp, wordSize);
+        header += decToBinary(zeroNum, wordSize);
+        //cout << header << endl;
+    }
+    else {
+        header += decToBinary(del, wordSize * 2);
+        header += decToBinary(temp, wordSize);
+        header += decToBinary(zeroNum, wordSize * 2);
+    }
     for(int i = 0; i < temp; i++){
         header += decToBinary(codeMap[i].cypherBits.size(), wordSize);
         header += codeMap[i].bits;
         header += codeMap[i].cypherBits;
+        //cout << decToBinary(codeMap[i].cypherBits.size(), wordSize) << " " << codeMap[i].bits << " " << codeMap[i].cypherBits << endl;
     }
-    while(header.size() % wordSize != 0){
+    while(header.size() % 8 != 0){
         header += "0";
     }
 
     return header;
 }
-string codeBody(vector<string> text, vector<element> codeMap, int wordSize){
+string codeBody(vector<string> text, vector<element> codeMap, int wordSize, int del){
     string body = "";
     for(int i = 0; i < text.size(); i++){
         for(int j = 0; j < codeMap.size(); j++){
             if(text[i].compare(codeMap[j].bits) == 0){
                 body += codeMap[j].cypherBits;
+                //cout << body << endl;
                 break;
             }
         }
@@ -151,10 +167,13 @@ string codeBody(vector<string> text, vector<element> codeMap, int wordSize){
         body += "0";
         zeroNum ++;
     }
-
+    
     // creating code header (code table)
-    string header = codeFileHeader(codeMap, wordSize, zeroNum);
+    string header = codeFileHeader(codeMap, wordSize, zeroNum, del);
     //cout << "header: " << header << endl;
+    
+    //cout << "body size" << header.size() << " " << body.size() << endl;
+    //cout << header + " " + body << endl;
 
     return header + body;
 }
@@ -218,19 +237,52 @@ vector<unsigned char> readFile(string fileName){
 
     return bytes;
 }
+int findShortestCypher(vector<element> vec){
+    int temp = vec[0].cypherBits.size();
+    for(int i = 1; i < vec.size(); i++){
+        if(temp > vec[i].cypherBits.size()){
+            temp = vec[i].cypherBits.size();
+        }
+    }
+    return temp;
+}
 
-string decode(vector<string> text, int wordSize){
+string decode(vector<string> text, int wordSize, int del){
     std::cout << "start Decode" << endl;
     vector<element> codeMap; // code table
     string str = "";
     string textString = ""; // string of coded text
-    int size = binaryStringToInt(text[0] + text[1]);
-    int zeroNum = binaryStringToInt(text[2]);
-    for(int i = 3; i < text.size(); i++){
+    int size = 0;
+    int beginFrom;
+    int zeroNum;
+    if(wordSize != 2){
+        beginFrom = 3;
+        del = binaryStringToInt(text[0]);
+        size = binaryStringToInt(text[1]);
+        if(size == 0){
+            size = pow(2, wordSize);
+        }
+        zeroNum = binaryStringToInt(text[2]);
+
+        //cout << size << " miau " << zeroNum << endl;
+    }
+    else{
+        beginFrom = 5;
+        del = binaryStringToInt(text[0] + text[1]);
+        size = binaryStringToInt(text[2]);
+        if(size == 0){
+            size = pow(2, wordSize);
+        }
+        zeroNum = binaryStringToInt(text[3] + text[4]);
+    }
+
+   // cout << "zeroNum: " << zeroNum << endl;
+    
+    for(int i = beginFrom; i < text.size(); i++){
         textString += text[i];
     }
     
-
+    //cout << textString << endl;
     int j = 0;
     std::cout << "creating decode table" << endl;
     //  creating code table
@@ -239,19 +291,27 @@ string decode(vector<string> text, int wordSize){
         string tempBit = textString.substr(j + wordSize, wordSize);
         string cypherBit = textString.substr(j + (2*wordSize), temp);
 
+        //cout << temp << " " << tempBit << " " << cypherBit << endl;
+
         codeMap.push_back(element(binaryStringToInt(tempBit), wordSize, cypherBit));
         j = j + (temp + wordSize * 2);
         
     }
 
     for(int i = 0; i < codeMap.size(); i++){
+        //cout << codeMap[i].cypherBits << endl;
         //cout<< char(codeMap[i].val) << " " << codeMap[i].count << " " << codeMap[i].bits << " " << codeMap[i].cypherBits << endl;
         //cout<< char(freq[i].val) << " " << freq[i].count << " " << endl;
     }
     // exiting header
-    while(j % wordSize != 0){
+    int tempAdd = ((wordSize * beginFrom) % 8);
+    cout << "tempAdd " << tempAdd << endl;
+    j = j + tempAdd;
+    while(j % (8) != 0){
         j++;
     }
+    j = j - tempAdd;
+    
 
     //decoding
     std::cout << "Decoding" << endl;
@@ -259,11 +319,13 @@ string decode(vector<string> text, int wordSize){
     std::cout << "code table count: " << codeMap.size() << endl;
     //string tempString = "";
     textString = textString.substr(0, textString.size() - zeroNum);
+    //cout << "textString" << textString.substr(j) << endl;
     string_view tempString = textString;
-    int smallestCypher = codeMap[0].cypherBits.size();
+    int smallestCypher = findShortestCypher(codeMap);
     int len = smallestCypher;
     int saveI = 0;
     bool find1 = false, find2 = false;
+    string buffStr = "";
     while(j < textString.size()){
     
          
@@ -287,7 +349,14 @@ string decode(vector<string> text, int wordSize){
             find1 = false;
             j += len - 1;
             len = smallestCypher - 1;
-            str += char(binaryStringToInt(codeMap[saveI].bits));
+            buffStr += codeMap[saveI].bits;
+            while(buffStr.size() >=8){
+                //cout << binaryStringToInt(buffStr.substr(0, 8)) << endl;
+                str += char(binaryStringToInt(buffStr.substr(0, 8)));
+
+                buffStr = buffStr.substr(8);
+            } 
+            //str += char(binaryStringToInt(codeMap[saveI].bits));
             //cout << j << endl;
             
         }
@@ -296,7 +365,21 @@ string decode(vector<string> text, int wordSize){
         if(tempString.substr(j).compare(tempString.substr(j, len)) == 0){
             for(int i = 0; i < codeMap.size(); i++){
                 if(codeMap[i].cypherBits.compare(tempString.substr(j)) == 0){
-                    str += char(binaryStringToInt(codeMap[i].bits));
+                    //str += char(binaryStringToInt(codeMap[i].bits));
+                    string tempSt = codeMap[i].bits;
+                    //cout << buffStr << " " << tempSt << endl;
+                    int tempDe = (buffStr.size() + tempSt.size()) % 8;
+                    tempSt = tempSt.substr(del);
+
+                    while(buffStr.size() + tempSt.size() >= 8){
+                        int tempIn = buffStr.size();
+                        buffStr += tempSt.substr(0, 8 - tempIn);
+
+                        //cout << buffStr << " " << tempSt << endl;
+                        str += char(binaryStringToInt(buffStr.substr(0, 8)));
+                        buffStr = buffStr.substr(8);
+                        tempSt = tempSt.substr(8 - tempIn);
+                    }
                     break;
                 }
             }
@@ -308,7 +391,7 @@ string decode(vector<string> text, int wordSize){
 
     }
 
-    //cout << "end string" << str << endl;
+    //cout << "end string" << str << " " << str.size() << endl;
     return str;
 }
 

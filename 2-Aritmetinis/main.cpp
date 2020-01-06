@@ -8,8 +8,8 @@
 #include <vector>
 #include <iostream>
 
-//compile su g++ main.cpp encode.cpp decode.cpp compress.cpp functions.cpp -o main
-//use: e <input file>
+//compile su Makefile aka. mingW32-make
+//use: e <input file> <codeWord>
 
 std::string out = "out.txt";
 std::string dec = "dec.txt";
